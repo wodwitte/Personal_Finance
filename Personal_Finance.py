@@ -99,6 +99,11 @@ Data_Table = dash_table.DataTable(
         page_action="native",
         page_current= 0,
         page_size= 10,
+        style_cell={
+            'overflow': 'hidden',
+            'textOverflow': 'ellipsis',
+            'maxWidth': 0
+        },
         style_cell_conditional=[
             {
                 'if': {'column_id': c},
