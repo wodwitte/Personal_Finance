@@ -3,7 +3,7 @@
 
 # Personal Finance Witteke
 
-# In[71]:
+# In[78]:
 
 
 import pandas as pd
@@ -20,7 +20,7 @@ from dash import Dash, html, Input, Output, dash_table
 import nbconvert
 
 
-# In[61]:
+# In[79]:
 
 
 # reading data
@@ -33,14 +33,14 @@ data4 = pd.read_csv("/Users/wouterdewitte/Downloads/BE13%200635%209867%204739%20
 data = pd.concat([data1, data2, data3, data4])
 
 
-# In[62]:
+# In[80]:
 
 
 # only necessary columns
 data = data.drop(columns=['Rekening', 'Rekeninguittrekselnummer', 'Transactienummer', 'Rekening tegenpartij', 'Naam tegenpartij bevat', 'Straat en nummer', 'Postcode en plaats', 'Transactie','Valutadatum', 'BIC', 'Landcode'], axis = 1)
 
 
-# In[63]:
+# In[81]:
 
 
 # change data type
@@ -48,14 +48,14 @@ data["Boekingsdatum"] = pd.to_datetime(data["Boekingsdatum"], format = "%d/%m/%Y
 data["Bedrag"] = data["Bedrag"].str.replace(',', '.').astype(float)
 
 
-# In[64]:
+# In[82]:
 
 
 # make monthly information
 data["year_month"] = data["Boekingsdatum"].dt.strftime("%Y") + ", " + data["Boekingsdatum"].dt.strftime("%m")
 
 
-# In[65]:
+# In[83]:
 
 
 Net_Worth_Table = data.groupby('year_month')['Bedrag'].sum().reset_index(name ='sum')
@@ -75,7 +75,7 @@ Net_Worth_Chart.update_xaxes(
     tickangle = 45)
 
 
-# In[66]:
+# In[84]:
 
 
 df = data[data["Bedrag"] < 0] 
@@ -86,7 +86,7 @@ Total_Monthly_Expenses_Chart.update_yaxes(title = 'Expenses (€)', visible = Tr
 Total_Monthly_Expenses_Chart.update_xaxes(title = 'Date', visible = True, showticklabels = True)
 
 
-# In[67]:
+# In[85]:
 
 
 Total_Monthly_Table = data.groupby('year_month')['Bedrag'].sum().reset_index(name = 'sum')
@@ -97,7 +97,7 @@ Total_Monthly_Chart.update_yaxes(title = 'Savings (€)', visible = True, showti
 Total_Monthly_Chart.update_xaxes(title = 'Date', visible = True, showticklabels = True)
 
 
-# In[68]:
+# In[86]:
 
 
 Data_Table = dash_table.DataTable(
@@ -118,10 +118,31 @@ Data_Table = dash_table.DataTable(
         page_action="native",
         page_current= 0,
         page_size= 10,
+        style_cell_conditional=[
+            {
+                'if': {'column_id': c},
+                'textAlign': 'left'
+            } for c in ['Date', 'Region']
+        ],
+        style_data={
+            'color': 'black',
+            'backgroundColor': 'white'
+        },
+        style_data_conditional=[
+            {
+                'if': {'row_index': 'odd'},
+                'backgroundColor': 'rgb(220, 220, 220)',
+            }
+        ],
+        style_header={
+            'backgroundColor': 'rgb(210, 210, 210)',
+            'color': 'black',
+            'fontWeight': 'bold'
+        }
     )
 
 
-# In[69]:
+# In[87]:
 
 
 # Build App
@@ -142,9 +163,9 @@ url=webbrowser.open('http://127.0.0.1:8050/')
 app.run_server(mode='external')
 
 
-# In[72]:
+# In[88]:
 
 
 # convert to .py
-get_ipython().system('nbconvert --to script Personal_Finance.ipynb')
+get_ipython().system('jupyter nbconvert --to script Personal_Finance.ipynb')
 
