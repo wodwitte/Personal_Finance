@@ -1,10 +1,19 @@
-#!/usr/bin/env python
-# coding: utf-8
+# ---
+# jupyter:
+#   jupytext:
+#     formats: ipynb,py
+#     text_representation:
+#       extension: .py
+#       format_name: light
+#       format_version: '1.5'
+#       jupytext_version: 1.13.8
+#   kernelspec:
+#     display_name: Python 3 (ipykernel)
+#     language: python
+#     name: python3
+# ---
 
 # Personal Finance Witteke
-
-# In[78]:
-
 
 import pandas as pd
 import numpy as np
@@ -19,10 +28,7 @@ import webbrowser
 from dash import Dash, html, Input, Output, dash_table
 import nbconvert
 
-
-# In[79]:
-
-
+# +
 # reading data
 data1 = pd.read_csv("/Users/wouterdewitte/Downloads/BE13%200635%209867%204739%202022-04-16%2015-35-43%201.csv", sep=';', skiprows = 12)
 data2 = pd.read_csv("/Users/wouterdewitte/Downloads/BE13%200635%209867%204739%202022-04-16%2015-35-48%202.csv", sep=';', skiprows = 12)
@@ -31,32 +37,17 @@ data4 = pd.read_csv("/Users/wouterdewitte/Downloads/BE13%200635%209867%204739%20
 
 
 data = pd.concat([data1, data2, data3, data4])
-
-
-# In[80]:
-
+# -
 
 # only necessary columns
 data = data.drop(columns=['Rekening', 'Rekeninguittrekselnummer', 'Transactienummer', 'Rekening tegenpartij', 'Naam tegenpartij bevat', 'Straat en nummer', 'Postcode en plaats', 'Transactie','Valutadatum', 'BIC', 'Landcode'], axis = 1)
-
-
-# In[81]:
-
 
 # change data type
 data["Boekingsdatum"] = pd.to_datetime(data["Boekingsdatum"], format = "%d/%m/%Y")
 data["Bedrag"] = data["Bedrag"].str.replace(',', '.').astype(float)
 
-
-# In[82]:
-
-
 # make monthly information
 data["year_month"] = data["Boekingsdatum"].dt.strftime("%Y") + ", " + data["Boekingsdatum"].dt.strftime("%m")
-
-
-# In[83]:
-
 
 Net_Worth_Table = data.groupby('year_month')['Bedrag'].sum().reset_index(name ='sum')
 Net_Worth_Table['cumulative sum'] = Net_Worth_Table['sum'].cumsum()
@@ -74,10 +65,6 @@ Net_Worth_Chart.update_layout(
 Net_Worth_Chart.update_xaxes(
     tickangle = 45)
 
-
-# In[84]:
-
-
 df = data[data["Bedrag"] < 0] 
 df["Bedrag"] = df['Bedrag']*(-1) 
 Total_Monthly_Expenses_Table = df.groupby('year_month')['Bedrag'].sum().reset_index(name = 'sum')
@@ -85,20 +72,14 @@ Total_Monthly_Expenses_Chart = px.bar(Total_Monthly_Expenses_Table, x = "year_mo
 Total_Monthly_Expenses_Chart.update_yaxes(title = 'Expenses (€)', visible = True, showticklabels = True)
 Total_Monthly_Expenses_Chart.update_xaxes(title = 'Date', visible = True, showticklabels = True)
 
-
-# In[85]:
-
-
+# +
 Total_Monthly_Table = data.groupby('year_month')['Bedrag'].sum().reset_index(name = 'sum')
 Total_Monthly_Chart = px.bar(Total_Monthly_Table, x = "year_month", y = "sum", title = "Total Monthly", color = Total_Monthly_Table["sum"],
                             color_continuous_scale= ["red","green"])
 
 Total_Monthly_Chart.update_yaxes(title = 'Savings (€)', visible = True, showticklabels = True)
 Total_Monthly_Chart.update_xaxes(title = 'Date', visible = True, showticklabels = True)
-
-
-# In[86]:
-
+# -
 
 Data_Table = dash_table.DataTable(
         id='datatable-interactivity',
@@ -141,10 +122,7 @@ Data_Table = dash_table.DataTable(
         }
     )
 
-
-# In[87]:
-
-
+# +
 # Build App
 app = JupyterDash(__name__)
 
@@ -161,11 +139,3 @@ app.layout = html.Div([
 # Run app and display result
 url=webbrowser.open('http://127.0.0.1:8050/')
 app.run_server(mode='external')
-
-
-# In[88]:
-
-
-# convert to .py
-get_ipython().system('jupyter nbconvert --to script Personal_Finance.ipynb')
-
