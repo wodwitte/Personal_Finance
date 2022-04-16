@@ -69,7 +69,6 @@ Net_Worth_Chart.update_layout(
     )
 Net_Worth_Chart.update_xaxes(
     tickangle = 45)
-Net_Worth_Chart.show()
 
 
 # In[34]:
@@ -92,7 +91,6 @@ Total_Monthly_Chart = px.bar(Total_Monthly_Table, x = "year_month", y = "sum", t
 
 Total_Monthly_Chart.update_yaxes(title = 'Savings (€)', visible = True, showticklabels = True)
 Total_Monthly_Chart.update_xaxes(title = 'Date', visible = True, showticklabels = True)
-Total_Monthly_Chart.show()
 
 
 # In[36]:
@@ -109,10 +107,9 @@ app.layout = html.Div([
         dcc.Graph(figure = Total_Monthly_Chart)
     ])
 ])
+webbrowser.open("http://127.0.0.1:8050")
 app.run_server(mode='external')
-# Run app and display result
 
-# In[37]
 
-url=webbrowser.open("http://127.0.0.1:8050")
+
 
