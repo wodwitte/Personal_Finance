@@ -22,11 +22,13 @@ import webbrowser
 
 
 # reading data
-data1 = pd.read_csv("/Users/wouterdewitte/Downloads/BE13%200635%209867%204739%202022-04-16%209-57-57%202.csv", sep=';')
+data1 = pd.read_csv("/Users/wouterdewitte/Downloads/BE13%200635%209867%204739%202022-04-16%2015-35-43%201.csv", sep=';', skiprows = 12)
+data2 = pd.read_csv("/Users/wouterdewitte/Downloads/BE13%200635%209867%204739%202022-04-16%2015-35-48%202.csv", sep=';', skiprows = 12)
+data3 = pd.read_csv("/Users/wouterdewitte/Downloads/BE13%200635%209867%204739%202022-04-16%2015-35-52%203.csv", sep=';', skiprows = 12)
+data4 = pd.read_csv("/Users/wouterdewitte/Downloads/BE13%200635%209867%204739%202022-04-16%2015-35-56%204.csv", sep=';', skiprows = 12)
 
-data2 = pd.read_csv("/Users/wouterdewitte/Downloads/BE13%200635%209867%204739%202022-04-16%209-57-48%201.csv", sep=';')
 
-data = pd.concat([data1, data2])
+data = pd.concat([data1, data2, data3, data4])
 
 
 # In[3]:
