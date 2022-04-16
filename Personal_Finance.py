@@ -1,9 +1,9 @@
-#!/usr/bin/env pythonw
+#!/usr/bin/env python
 # coding: utf-8
 
 # Personal Finance Witteke
 
-# In[28]:
+# In[1]:
 
 
 import pandas as pd
@@ -18,7 +18,7 @@ import dash_html_components as html       #to compose the dash layout using Pyth
 import webbrowser
 
 
-# In[29]:
+# In[2]:
 
 
 # reading data
@@ -29,14 +29,14 @@ data2 = pd.read_csv("/Users/wouterdewitte/Downloads/BE13%200635%209867%204739%20
 data = pd.concat([data1, data2])
 
 
-# In[30]:
+# In[3]:
 
 
 # only necessary columns
 data = data.drop(columns=['Rekening', 'Rekeninguittrekselnummer', 'Transactienummer', 'Rekening tegenpartij', 'Naam tegenpartij bevat', 'Straat en nummer', 'Postcode en plaats', 'Transactie','Valutadatum', 'BIC', 'Landcode'], axis = 1)
 
 
-# In[31]:
+# In[4]:
 
 
 # change data type
@@ -44,14 +44,14 @@ data["Boekingsdatum"] = pd.to_datetime(data["Boekingsdatum"], format = "%d/%m/%Y
 data["Bedrag"] = data["Bedrag"].str.replace(',', '.').astype(float)
 
 
-# In[32]:
+# In[5]:
 
 
 # make monthly information
 data["year_month"] = data["Boekingsdatum"].dt.strftime("%Y") + ", " + data["Boekingsdatum"].dt.strftime("%m")
 
 
-# In[33]:
+# In[6]:
 
 
 Net_Worth_Table = data.groupby('year_month')['Bedrag'].sum().reset_index(name ='sum')
@@ -69,9 +69,10 @@ Net_Worth_Chart.update_layout(
     )
 Net_Worth_Chart.update_xaxes(
     tickangle = 45)
+Net_Worth_Chart.show()
 
 
-# In[34]:
+# In[7]:
 
 
 df = data[data["Bedrag"] < 0] 
@@ -82,18 +83,19 @@ Total_Monthly_Expenses_Chart.update_yaxes(title = 'Expenses (€)', visible = Tr
 Total_Monthly_Expenses_Chart.update_xaxes(title = 'Date', visible = True, showticklabels = True)
 
 
-# In[35]:
+# In[8]:
 
 
 Total_Monthly_Table = data.groupby('year_month')['Bedrag'].sum().reset_index(name = 'sum')
 Total_Monthly_Chart = px.bar(Total_Monthly_Table, x = "year_month", y = "sum", title = "Total Monthly", color = Total_Monthly_Table["sum"],
-                            color_continuous_scale=px.colors.sequential.RdBu)
+                            color_continuous_scale= ["red","green"])
 
 Total_Monthly_Chart.update_yaxes(title = 'Savings (€)', visible = True, showticklabels = True)
 Total_Monthly_Chart.update_xaxes(title = 'Date', visible = True, showticklabels = True)
+Total_Monthly_Chart.show()
 
 
-# In[36]:
+# In[9]:
 
 
 # Build App
@@ -107,9 +109,13 @@ app.layout = html.Div([
         dcc.Graph(figure = Total_Monthly_Chart)
     ])
 ])
-webbrowser.open("http://127.0.0.1:8050")
+    
+# Run app and display result
 app.run_server(mode='external')
 
 
+# In[10]:
 
+
+url=webbrowser.open('http://127.0.0.1:8050/')
 
